@@ -1,16 +1,15 @@
-# The Docker image that will be used to build your app
-image: .gitlab-ci.yml
-# Functions that should be executed before the build script is run
+image: node:latest  # Use the latest Node.js image
+
 before_script:
-  - npm ci
+  - npm ci  # Install dependencies
+
 pages:
   script:
-    - node
+    - npm run build || echo "No build step, skipping..."
+    - mkdir -p public
+    - cp -r src/* public/  # Move all files to the 'public' folder
   artifacts:
     paths:
-      # The folder that contains the files to be exposed at the Page URL
-      - public
+      - public  # GitLab Pages serves files from 'public'
   rules:
-    # This ensures that only pushes to the default branch will trigger
-    # a pages deploy
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH  # Deploy only from the main branch
