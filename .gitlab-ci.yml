@@ -1,15 +1,14 @@
-image: node:latest  # Use the latest Node.js image
+image: node:latest  # Use a valid Docker image
 
 before_script:
-  - npm ci  # Install dependencies
+  - npm ci
 
 pages:
   script:
-    - npm run build || echo "No build step, skipping..."
-    - mkdir -p public
-    - cp -r src/* public/  # Move all files to the 'public' folder
+    - npm run build
+    - cp -r public/ .  # Make sure the "public" folder exists after the build
   artifacts:
     paths:
-      - public  # GitLab Pages serves files from 'public'
+      - public
   rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH  # Deploy only from the main branch
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
